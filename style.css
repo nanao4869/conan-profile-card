@@ -473,6 +473,8 @@ legend {
   color: #7f8c9c;
   padding: 20px;
 }
+.site-footer a { color: var(--blue); text-decoration: none; }
+.site-footer a:hover { text-decoration: underline; }
 
 @media (max-width: 760px) {
   .row { flex-direction: column; }
