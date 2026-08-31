@@ -439,10 +439,15 @@
   async function downloadCardImage() {
     const card = document.getElementById("card");
     const prevTransform = card.style.transform;
+    const prevHeight = card.style.height;
     try {
       setExportMode(true);
       // Capture at true, unscaled size regardless of how small it's shown on-screen.
       card.style.transform = "";
+      // Some mobile browsers lay the card out at a fractional CSS height, which makes
+      // html-to-image's SVG rasterizer blend a stray row at the border on export.
+      // Snapping to a whole pixel before capture avoids that seam.
+      card.style.height = `${Math.round(card.getBoundingClientRect().height)}px`;
       const dataUrl = await htmlToImage.toPng(card, { pixelRatio: 2, cacheBust: true, skipFonts: true });
       const link = document.createElement("a");
       const safeName = formEl("name").value.trim().replace(/[\\/:*?"<>|]/g, "").replace(/\s+/g, "_");
@@ -460,6 +465,7 @@
       return false;
     } finally {
       card.style.transform = prevTransform;
+      card.style.height = prevHeight;
       setExportMode(false);
     }
   }
