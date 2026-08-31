@@ -189,7 +189,9 @@ legend {
 
 /* ---------- preview ---------- */
 .preview-panel {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
