@@ -403,12 +403,34 @@
     localStorage.removeItem(STORAGE_KEY);
   });
 
+  // Card-internal responsive layout is driven by these two classes (see style.css)
+  // rather than bare @media, so downloadCardImage() can strip them and force the
+  // standard desktop-style card into the exported PNG regardless of device.
+  const narrowCardQuery = window.matchMedia("(max-width: 760px)");
+  const compactCardQuery = window.matchMedia("(max-width: 520px)");
+  function syncResponsiveCardClasses() {
+    document.body.classList.toggle("is-narrow-card", narrowCardQuery.matches);
+    document.body.classList.toggle("is-compact-card", compactCardQuery.matches);
+  }
+  narrowCardQuery.addEventListener("change", syncResponsiveCardClasses);
+  compactCardQuery.addEventListener("change", syncResponsiveCardClasses);
+  syncResponsiveCardClasses();
+
   // Shared by both buttons: renders the card to PNG and triggers a browser download.
   // Returns true on success so callers (like the X button) know whether to continue.
   async function downloadCardImage() {
     const card = document.getElementById("card");
+    const wasNarrow = document.body.classList.contains("is-narrow-card");
+    const wasCompact = document.body.classList.contains("is-compact-card");
+    const prevWidth = card.style.width;
+    const prevMaxWidth = card.style.maxWidth;
     try {
       setExportMode(true);
+      // Force the desktop card layout for the export, no matter how narrow the
+      // real device viewport is — see the CSS comment above these classes.
+      document.body.classList.remove("is-narrow-card", "is-compact-card");
+      card.style.width = "700px";
+      card.style.maxWidth = "700px";
       const dataUrl = await htmlToImage.toPng(card, { pixelRatio: 2, cacheBust: true, skipFonts: true });
       const link = document.createElement("a");
       const safeName = formEl("name").value.trim().replace(/[\\/:*?"<>|]/g, "").replace(/\s+/g, "_");
@@ -425,6 +447,10 @@
       alert("画像の生成に失敗しました。もう一度お試しください。");
       return false;
     } finally {
+      card.style.width = prevWidth;
+      card.style.maxWidth = prevMaxWidth;
+      document.body.classList.toggle("is-narrow-card", wasNarrow);
+      document.body.classList.toggle("is-compact-card", wasCompact);
       setExportMode(false);
     }
   }

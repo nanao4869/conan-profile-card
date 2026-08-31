@@ -481,10 +481,6 @@ legend {
 .mobile-tabs { display: none; }
 
 @media (max-width: 760px) {
-  .row { flex-direction: column; }
-  .section-grid { grid-template-columns: 1fr; }
-  .card { width: 100%; }
-
   /* Editing a long form and a tall preview card in one endless scroll makes them
      hard to compare on a phone, so below the desktop breakpoint a sticky tab bar
      shows one panel at a time instead of stacking both. */
@@ -514,19 +510,26 @@ legend {
   body[data-mobile-tab="preview"] .form-panel { display: none; }
 }
 
+/* Card-internal layout below is driven by JS-toggled classes (via matchMedia)
+   instead of @media directly, so the PNG export can temporarily strip these
+   classes and always render the standard desktop-style card — see
+   downloadCardImage() in script.js. Otherwise a card saved from a phone would
+   look structurally different from one saved on desktop. */
+body.is-narrow-card .row { flex-direction: column; }
+body.is-narrow-card .section-grid { grid-template-columns: 1fr; }
+body.is-narrow-card .card { width: 100%; }
+
 /* Below this width, cramming Name+X ID or Age+Gender+Location onto one line just
    forces each value to wrap internally instead, stretching the card. Stack them
    into one field per row instead, matching how Location/Media already sit alone. */
-@media (max-width: 520px) {
-  .box-profile > .two-col,
-  .box-profile > .three-col {
-    flex-direction: column;
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-  .box-profile > .two-col > .field,
-  .box-profile > .three-col > .field {
-    border-bottom: 2px solid var(--border-blue);
-    padding-bottom: 3px;
-  }
+body.is-compact-card .box-profile > .two-col,
+body.is-compact-card .box-profile > .three-col {
+  flex-direction: column;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+body.is-compact-card .box-profile > .two-col > .field,
+body.is-compact-card .box-profile > .three-col > .field {
+  border-bottom: 2px solid var(--border-blue);
+  padding-bottom: 3px;
 }
