@@ -483,3 +483,20 @@ legend {
   .section-grid { grid-template-columns: 1fr; }
   .card { width: 100%; }
 }
+
+/* Below this width, cramming Name+X ID or Age+Gender+Location onto one line just
+   forces each value to wrap internally instead, stretching the card. Stack them
+   into one field per row instead, matching how Location/Media already sit alone. */
+@media (max-width: 520px) {
+  .box-profile > .two-col,
+  .box-profile > .three-col {
+    flex-direction: column;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .box-profile > .two-col > .field,
+  .box-profile > .three-col > .field {
+    border-bottom: 2px solid var(--border-blue);
+    padding-bottom: 3px;
+  }
+}
