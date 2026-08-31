@@ -439,16 +439,30 @@
   async function downloadCardImage() {
     const card = document.getElementById("card");
     const prevTransform = card.style.transform;
+    const prevWidth = card.style.width;
     const prevHeight = card.style.height;
     try {
       setExportMode(true);
       // Capture at true, unscaled size regardless of how small it's shown on-screen.
       card.style.transform = "";
-      // Some mobile browsers lay the card out at a fractional CSS height, which makes
-      // html-to-image's SVG rasterizer blend a stray row at the border on export.
-      // Snapping to a whole pixel before capture avoids that seam.
-      card.style.height = `${Math.round(card.getBoundingClientRect().height)}px`;
-      const dataUrl = await htmlToImage.toPng(card, { pixelRatio: 2, cacheBust: true, skipFonts: true });
+      // Some mobile browsers lay the card out at a fractional CSS size. If left
+      // fractional, html-to-image scales its internal SVG render onto the pixelRatio
+      // canvas by a non-integer factor, which resamples a single seam row/column
+      // (border blended with white) into the border on export. Snapping both
+      // dimensions to whole pixels, and passing them explicitly, keeps the scale a
+      // clean x2 and avoids that seam.
+      const rect = card.getBoundingClientRect();
+      const exportWidth = Math.round(rect.width);
+      const exportHeight = Math.round(rect.height);
+      card.style.width = `${exportWidth}px`;
+      card.style.height = `${exportHeight}px`;
+      const dataUrl = await htmlToImage.toPng(card, {
+        pixelRatio: 2,
+        cacheBust: true,
+        skipFonts: true,
+        width: exportWidth,
+        height: exportHeight,
+      });
       const link = document.createElement("a");
       const safeName = formEl("name").value.trim().replace(/[\\/:*?"<>|]/g, "").replace(/\s+/g, "_");
       const d = new Date();
@@ -465,6 +479,7 @@
       return false;
     } finally {
       card.style.transform = prevTransform;
+      card.style.width = prevWidth;
       card.style.height = prevHeight;
       setExportMode(false);
     }
