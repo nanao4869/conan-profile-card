@@ -110,6 +110,8 @@
       const visible = ids.some((id) => isChecked(id));
       document.getElementById(boxId).style.display = visible ? "" : "none";
     });
+
+    syncCardScale();
   }
 
   // Right before generating the downloaded image, temporarily hides anything that's only
@@ -243,6 +245,7 @@
     h = Math.max(h, minSize);
     iconFrame.style.width = `${Math.round(w)}px`;
     iconFrame.style.height = `${Math.round(h)}px`;
+    syncCardScale();
   }
 
   function setIcon(dataUrl) {
@@ -270,6 +273,7 @@
     if (iconCaption) iconCaption.classList.remove("is-hidden");
     document.getElementById("f-icon").value = "";
     saveToStorage();
+    syncCardScale();
   }
 
   const DEFAULT_ORDER = ["box-history", "box-oshi", "box-post-style", "box-likes", "box-movies", "box-episodes", "box-free"];
@@ -403,34 +407,42 @@
     localStorage.removeItem(STORAGE_KEY);
   });
 
-  // Card-internal responsive layout is driven by these two classes (see style.css)
-  // rather than bare @media, so downloadCardImage() can strip them and force the
-  // standard desktop-style card into the exported PNG regardless of device.
-  const narrowCardQuery = window.matchMedia("(max-width: 760px)");
-  const compactCardQuery = window.matchMedia("(max-width: 520px)");
-  function syncResponsiveCardClasses() {
-    document.body.classList.toggle("is-narrow-card", narrowCardQuery.matches);
-    document.body.classList.toggle("is-compact-card", compactCardQuery.matches);
+  // The card keeps its full desktop structure at every screen size; on a narrow
+  // viewport it's shrunk visually via CSS transform instead of being reflowed, so
+  // the on-screen preview always looks like the real (2-column) output. The wrapper
+  // is resized to match the scaled footprint so it doesn't leave dead space.
+  const previewScroll = document.querySelector(".preview-scroll");
+  const cardEl = document.getElementById("card");
+
+  function syncCardScale() {
+    const available = previewScroll.parentElement.clientWidth;
+    const natural = 700;
+    const scale = available > 0 ? Math.min(1, available / natural) : 1;
+    if (scale < 1) {
+      cardEl.style.transform = `scale(${scale})`;
+      const naturalHeight = cardEl.offsetHeight;
+      previewScroll.style.width = `${Math.round(natural * scale)}px`;
+      previewScroll.style.height = `${Math.round(naturalHeight * scale)}px`;
+      previewScroll.classList.add("is-scaled");
+    } else {
+      cardEl.style.transform = "";
+      previewScroll.style.width = "";
+      previewScroll.style.height = "";
+      previewScroll.classList.remove("is-scaled");
+    }
   }
-  narrowCardQuery.addEventListener("change", syncResponsiveCardClasses);
-  compactCardQuery.addEventListener("change", syncResponsiveCardClasses);
-  syncResponsiveCardClasses();
+  window.addEventListener("resize", syncCardScale);
+  window.addEventListener("orientationchange", syncCardScale);
 
   // Shared by both buttons: renders the card to PNG and triggers a browser download.
   // Returns true on success so callers (like the X button) know whether to continue.
   async function downloadCardImage() {
     const card = document.getElementById("card");
-    const wasNarrow = document.body.classList.contains("is-narrow-card");
-    const wasCompact = document.body.classList.contains("is-compact-card");
-    const prevWidth = card.style.width;
-    const prevMaxWidth = card.style.maxWidth;
+    const prevTransform = card.style.transform;
     try {
       setExportMode(true);
-      // Force the desktop card layout for the export, no matter how narrow the
-      // real device viewport is — see the CSS comment above these classes.
-      document.body.classList.remove("is-narrow-card", "is-compact-card");
-      card.style.width = "700px";
-      card.style.maxWidth = "700px";
+      // Capture at true, unscaled size regardless of how small it's shown on-screen.
+      card.style.transform = "";
       const dataUrl = await htmlToImage.toPng(card, { pixelRatio: 2, cacheBust: true, skipFonts: true });
       const link = document.createElement("a");
       const safeName = formEl("name").value.trim().replace(/[\\/:*?"<>|]/g, "").replace(/\s+/g, "_");
@@ -447,10 +459,7 @@
       alert("画像の生成に失敗しました。もう一度お試しください。");
       return false;
     } finally {
-      card.style.width = prevWidth;
-      card.style.maxWidth = prevMaxWidth;
-      document.body.classList.toggle("is-narrow-card", wasNarrow);
-      document.body.classList.toggle("is-compact-card", wasCompact);
+      card.style.transform = prevTransform;
       setExportMode(false);
     }
   }
@@ -482,6 +491,9 @@
       btn.classList.add("is-active");
       document.body.dataset.mobileTab = btn.dataset.tab;
       window.scrollTo({ top: 0, behavior: "smooth" });
+      // The preview panel is width:0 while its tab is hidden (display:none), so the
+      // scale can only be measured correctly once switching in makes it visible.
+      if (btn.dataset.tab === "preview") syncCardScale();
     });
   });
 
@@ -489,4 +501,5 @@
   loadFromStorage();
   applyCardOrder();
   updatePreview();
+  syncCardScale();
 })();
