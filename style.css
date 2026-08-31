@@ -79,8 +79,8 @@ legend {
   outline: 2px solid var(--blue);
   outline-offset: 1px;
 }
-.two-col { display: flex; gap: 10px; }
-.two-col .field-block { flex: 1; }
+.two-col { display: flex; gap: 10px; margin-top: 10px; }
+.two-col .field-block { flex: 1; margin-top: 0; }
 .three-col { display: flex; gap: 10px; flex-wrap: wrap; }
 .file-label { margin-top: 12px; }
 .file-label input { margin-top: 4px; }
