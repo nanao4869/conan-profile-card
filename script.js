@@ -450,6 +450,15 @@
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`, "_blank", "noopener");
   });
 
+  document.querySelectorAll(".mobile-tab").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".mobile-tab").forEach((b) => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      document.body.dataset.mobileTab = btn.dataset.tab;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+
   updateDate();
   loadFromStorage();
   applyCardOrder();

@@ -478,10 +478,40 @@ legend {
 .site-footer a { color: var(--blue); text-decoration: none; }
 .site-footer a:hover { text-decoration: underline; }
 
+.mobile-tabs { display: none; }
+
 @media (max-width: 760px) {
   .row { flex-direction: column; }
   .section-grid { grid-template-columns: 1fr; }
   .card { width: 100%; }
+
+  /* Editing a long form and a tall preview card in one endless scroll makes them
+     hard to compare on a phone, so below the desktop breakpoint a sticky tab bar
+     shows one panel at a time instead of stacking both. */
+  .mobile-tabs {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,.1);
+  }
+  .mobile-tab {
+    flex: 1;
+    padding: 12px;
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: none;
+    border-bottom: 3px solid transparent;
+    background: #fff;
+    color: #7f8c9c;
+    cursor: pointer;
+  }
+  .mobile-tab.is-active { color: var(--blue); border-bottom-color: var(--blue); }
+  .layout { padding-top: 16px; }
+  body[data-mobile-tab="form"] .preview-panel { display: none; }
+  body[data-mobile-tab="preview"] .form-panel { display: none; }
 }
 
 /* Below this width, cramming Name+X ID or Age+Gender+Location onto one line just
