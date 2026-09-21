@@ -535,10 +535,11 @@ legend {
 .tool-card img { flex: 0 0 auto; width: 200px; height: auto; object-fit: cover; background: #dde6f1; }
 .tool-card-body { display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 12px 14px 12px 0; font-size: 0.8rem; color: #5b6b7d; line-height: 1.5; }
 .tool-card-body strong { font-size: 1rem; color: var(--navy); }
-.tool-card-body em { margin-left: 4px; padding: 1px 8px; border-radius: 999px; background: var(--red); color: #fff; font-size: 0.7rem; font-style: normal; vertical-align: middle; }
+.tool-card-body em { white-space: nowrap; display: inline-block; margin-left: 4px; padding: 1px 8px; border-radius: 999px; background: var(--red); color: #fff; font-size: 0.7rem; font-style: normal; vertical-align: middle; }
 @media (max-width: 520px) {
   .other-tools { padding: 0 16px; }
-  .tool-card { flex-direction: column; gap: 0; }
-  .tool-card img { width: 100%; }
-  .tool-card-body { padding: 12px 14px 14px; }
+  .tool-card { gap: 12px; }
+  .tool-card img { width: 96px; height: 96px; align-self: center; margin: 8px 0 8px 8px; border-radius: 8px; }
+  .tool-card-body { padding: 8px 12px 8px 0; gap: 2px; font-size: 0.75rem; }
+  .tool-card-body strong { font-size: 0.9rem; }
 }
