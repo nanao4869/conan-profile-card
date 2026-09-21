@@ -24,6 +24,8 @@ body {
 }
 .site-header h1 { margin: 0 0 8px; font-size: 1.4rem; }
 .site-header p { margin: 0; font-size: 0.85rem; line-height: 1.6; opacity: 0.9; }
+.site-header .site-link-row a { color: #fff; text-decoration: underline; text-underline-offset: 3px; font-weight: 700; }
+.site-header .site-link-row a:hover { opacity: 0.8; }
 
 .layout {
   display: flex;
