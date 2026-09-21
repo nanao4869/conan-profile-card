@@ -24,8 +24,6 @@ body {
 }
 .site-header h1 { margin: 0 0 8px; font-size: 1.4rem; }
 .site-header p { margin: 0; font-size: 0.85rem; line-height: 1.6; opacity: 0.9; }
-.site-header .site-link-row a { color: #fff; text-decoration: underline; text-underline-offset: 3px; font-weight: 700; }
-.site-header .site-link-row a:hover { opacity: 0.8; }
 
 .layout {
   display: flex;
@@ -520,3 +518,20 @@ legend {
    script.js), not by reflowing its layout — see .card.is-scaled below. */
 .card { transform-origin: top left; }
 .preview-scroll.is-scaled { overflow: hidden; }
+
+/* ---------- other tools (footer cards) ---------- */
+.other-tools { max-width: 720px; margin: 8px auto 0; padding: 0 24px; }
+.other-tools h2 { margin: 0 0 10px; font-size: 0.85rem; font-weight: 700; color: #7f8c9c; }
+.tool-card { display: flex; align-items: stretch; gap: 14px; overflow: hidden; border: 1px solid #cfdcec; border-radius: 12px; background: #fff; color: var(--text); text-decoration: none; transition: border-color .15s, box-shadow .15s; }
+.tool-card:hover { border-color: var(--blue); box-shadow: 0 4px 14px rgba(26, 115, 216, .15); }
+.tool-card:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.tool-card img { flex: 0 0 auto; width: 200px; height: auto; object-fit: cover; background: #dde6f1; }
+.tool-card-body { display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 12px 14px 12px 0; font-size: 0.8rem; color: #5b6b7d; line-height: 1.5; }
+.tool-card-body strong { font-size: 1rem; color: var(--navy); }
+.tool-card-body em { margin-left: 4px; padding: 1px 8px; border-radius: 999px; background: #d81c2c; color: #fff; font-size: 0.7rem; font-style: normal; vertical-align: middle; }
+@media (max-width: 520px) {
+  .other-tools { padding: 0 16px; }
+  .tool-card { flex-direction: column; gap: 0; }
+  .tool-card img { width: 100%; }
+  .tool-card-body { padding: 12px 14px 14px; }
+}
