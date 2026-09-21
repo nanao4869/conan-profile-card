@@ -5,6 +5,8 @@
   --border-blue: #2b6fd6;
   --paper: #f4f8fc;
   --text: #16324f;
+  --red: #e0303f; /* same as the Tier site */
+  --blue-dark: #1b5cb8;
 }
 
 * { box-sizing: border-box; }
@@ -16,13 +18,18 @@ body {
   color: var(--text);
 }
 
+/* header: same as the Tier site (navy gradient, red line, left-aligned title, red beta chip) */
 .site-header {
-  background: var(--navy);
+  background: linear-gradient(180deg, #14295c, #0d1a3a);
+  border-bottom: 3px solid var(--red);
   color: #fff;
-  padding: 20px 24px;
-  text-align: center;
+  padding: 14px 24px 12px;
 }
-.site-header h1 { margin: 0 0 8px; font-size: 1.4rem; }
+.site-header h1 { margin: 0; font-size: 20px; line-height: 1.35; }
+.site-header .beta {
+  display: inline-block; margin-left: 6px; padding: 0 8px; border-radius: 999px;
+  background: var(--red); color: #fff; font-size: 12px; vertical-align: middle;
+}
 .site-header p { margin: 0; font-size: 0.85rem; line-height: 1.6; opacity: 0.9; }
 
 .layout {
@@ -177,7 +184,7 @@ legend {
   font: inherit;
   font-size: 0.8rem;
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid var(--blue);
   background: #fff;
   color: var(--blue);
@@ -449,11 +456,11 @@ legend {
   padding: 12px 28px;
   border-radius: 8px;
   border: none;
-  background: var(--navy);
+  background: var(--blue);
   color: #fff;
   cursor: pointer;
 }
-.btn-main:hover { background: var(--blue); }
+.btn-main:hover:not(:disabled) { background: var(--blue-dark); }
 .btn-main:disabled { opacity: 0.6; cursor: default; }
 .btn-x {
   font: inherit;
@@ -528,7 +535,7 @@ legend {
 .tool-card img { flex: 0 0 auto; width: 200px; height: auto; object-fit: cover; background: #dde6f1; }
 .tool-card-body { display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 12px 14px 12px 0; font-size: 0.8rem; color: #5b6b7d; line-height: 1.5; }
 .tool-card-body strong { font-size: 1rem; color: var(--navy); }
-.tool-card-body em { margin-left: 4px; padding: 1px 8px; border-radius: 999px; background: #d81c2c; color: #fff; font-size: 0.7rem; font-style: normal; vertical-align: middle; }
+.tool-card-body em { margin-left: 4px; padding: 1px 8px; border-radius: 999px; background: var(--red); color: #fff; font-size: 0.7rem; font-style: normal; vertical-align: middle; }
 @media (max-width: 520px) {
   .other-tools { padding: 0 16px; }
   .tool-card { flex-direction: column; gap: 0; }
